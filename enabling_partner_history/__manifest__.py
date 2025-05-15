@@ -3,7 +3,7 @@
 
 {
     'name': 'Enabling Partner History',
-    'version': '1.20210330',
+    'version': '1.2',
     'category': '',
     'sequence': 1,
     'summary': 'Partner History',
@@ -18,13 +18,10 @@
         'sale'
     ],
     'data': [
+      'security/ir.model.access.csv',
       'views/enabling_partner_history.xml'
-    ],
-    'demo': [
-        
     ],
     'installable': True,
     'application': False,
     'auto_install': False,
-    'qweb': [],
 }

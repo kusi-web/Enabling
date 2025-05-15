@@ -1,12 +1,10 @@
-
 from odoo import api, models, fields, _
-from xlrd import open_workbook 
-import base64
-from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 
 
 class PartnerHistory(models.Model):    
     _name = 'partner.history'
+    _description = 'Partner History'
+
     partner_id = fields.Many2one('res.partner',string ='Customer ID')
     sage_document = fields.Char(string ='Sage Document ID')
     transaction_type = fields.Char(string ='Transaction Type')
@@ -19,8 +17,11 @@ class PartnerHistory(models.Model):
     date_post = fields.Char(string ='Date Posted')
     date_paid = fields.Char(string='Date Paid')
 
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+    _description = 'Res Partner'
+
     history_ids = fields.One2many('partner.history','partner_id',string='Partner History')
     history_count = fields.Integer(string='Historical Count', compute='_compute_hist_count')
     toi_pakihi=fields.Boolean(string="Toi Pakihi",default=False)
@@ -38,6 +39,6 @@ class ResPartner(models.Model):
         action.update({
             'name': _("History generated"),
             'domain': [('id', 'in', self.history_ids.ids)],
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             })
         return action

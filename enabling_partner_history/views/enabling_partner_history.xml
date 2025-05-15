@@ -27,7 +27,7 @@
         <field name="name">Partner History</field>   
         <field name="model">partner.history</field>    
         <field name="arch" type="xml">  
-            <tree editable="bottom">
+            <list editable="bottom">
                     <field name="partner_id" readonly="0"/>
                     <field name="sage_document" readonly="0"/>
                     <field name="fiscyr" readonly="0"/>
@@ -37,7 +37,7 @@
                     <field name="inv_disc"/>
                     <field name="date_post"/>
                     <field name="date_paid"/>
-            </tree> 
+            </list> 
         </field>
     </record>
 
