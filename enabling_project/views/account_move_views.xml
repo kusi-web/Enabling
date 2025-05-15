@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_move_form_enabling" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                    <field name="project_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))]}"/>
+                    <field name="task_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))], 'required': [('project_id', '!=', False)]}"/>
+                    <field name="task_line_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))], 'required': [('project_id', '!=', False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                    <field name="project_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))]}"/>
+                    <field name="task_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))], 'required': [('project_id', '!=', False)]}"/>
+                    <field name="task_line_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))], 'required': [('project_id', '!=', False)]}"/>
+                    <field name="taskline_account_id" invisible="1"/>
+                    <field name="taskline_analytic_account_id" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                    <attribute name="context">{
+                        'default_move_type': context.get('default_move_type'),
+                        'journal_id': journal_id,
+                        'default_partner_id': commercial_partner_id,
+                        'default_currency_id': currency_id or company_currency_id,
+
+                        'default_project_id': project_id,
+                        'default_task_id': task_id,
+                        'default_task_line_id': task_line_id,
+                    }</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="recurring_doc" string="Recurring Invoice"/>
+                  </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="after">
+                    <field name="project_id" />
+                    <field name="task_id" />
+                    <field name="task_line_id" />
+                </xpath>
+                <xpath expr="//field[@name='line_ids']" position="attributes">
+                    <attribute name="context">{
+                        'default_move_type': context.get('default_move_type'),
+                        'line_ids': line_ids,
+                        'journal_id': journal_id,
+                        'default_partner_id': commercial_partner_id,
+                        'default_currency_id': currency_id or company_currency_id,
+
+                        'default_project_id': project_id,
+                        'default_task_id': task_id,
+                        'default_task_line_id': task_line_id,
+                    }</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
+                    <attribute name="attrs">{'required': [('display_type', '=', False)], 'readonly': [('taskline_account_id', '!=', False)]}</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('taskline_analytic_account_id', '!=', False)]}</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!--List view for Vendor bills SB-->
+        <record id="view_move_line_tree_new" model="ir.ui.view">
+            <field name="name">account.move.line.tree</field>
+            <field name="model">account.move.line</field>
+            <field eval="100" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Invoice Lines" create="false" edit="false" sample="1">
+                    <field name="parent_invoice_partner_display_name" groups="base.group_user" string="Vendor" />
+                    <field name="move_name" decoration-bf="1" string="Invoice Number"/>
+                    <field name="task_id"/>
+                    <field name="invoice_date" string="Invoice Date"/>
+                    <field name="payment_state" widget="badge" decoration-danger="payment_state == 'not_paid'" decoration-warning="payment_state in ('partial', 'in_payment')" decoration-success="payment_state in ('paid', 'reversed')"/>
+                    <field name="parent_state" widget="badge" decoration-success="parent_state == 'posted'" decoration-info="parent_state == 'draft'" optional="show"/>
+                    <field name="invoice_date_due" widget="remaining_days" />
+                    <field name="price_subtotal" string="Tax Excl Amount" sum="Total" optional="show"/>
+                    <field name="price_total" string="Tax Incl Amount" sum="Total" optional="show"/>
+                    <field name="currency_id" readonly="1" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--List view for Journals SB-->
+        <record id="view_move_line_journal_tree_new" model="ir.ui.view">
+            <field name="name">account.move.line.journal.tree</field>
+            <field name="model">account.move.line</field>
+            <field eval="100" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Journal Lines" create="false" edit="false" sample="1">
+                    <field name="name" />
+                    <field name="move_name" decoration-bf="1" string="Invoice Number"/>
+                    <field name="task_id"/>
+                    <field name="parent_state" widget="badge" decoration-success="parent_state == 'posted'" decoration-info="parent_state == 'draft'" optional="show"/>
+                    <field name="balance" />
+                    <field name="currency_id" readonly="1" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--Action for Vendor bills SB in project-->
+        <record id="act_project_2_move_line_in_invoice" model="ir.actions.act_window">
+            <field name="name">Invoice Lines</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="enabling_project.view_move_line_tree_new"/>
+            <field name="domain">[('project_id', '=', active_id)]</field>
+            <field name="context">{'default_project_id': active_id}</field>
+        </record>
+
+        <!--Action for Vendor bills SB in task-->
+        <record id="act_task_2_move_line_in_invoice" model="ir.actions.act_window">
+            <field name="name">Invoice Lines</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="enabling_project.view_move_line_tree_new"/>
+            <field name="domain">[('task_id', '=', active_id)]</field>
+            <field name="context">{'default_task_id': active_id}</field>
+        </record>
+
+        <!--Action for Journals SB in project-->
+        <record id="act_project_2_move_line_journal_in_invoice" model="ir.actions.act_window">
+            <field name="name">Journal Lines</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="enabling_project.view_move_line_journal_tree_new"/>
+            <field name="domain">[('project_id', '=', active_id)]</field>
+            <field name="context">{'default_project_id': active_id}</field>
+        </record>
+
+        <!--Action for Journals SB in task-->
+        <record id="act_task_2_move_line_journal_in_invoice" model="ir.actions.act_window">
+            <field name="name">Journal Lines</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="enabling_project.view_move_line_journal_tree_new"/>
+            <field name="domain">[('task_id', '=', active_id)]</field>
+            <field name="context">{'default_task_id': active_id}</field>
+        </record>
+
+    </data>
+</odoo>

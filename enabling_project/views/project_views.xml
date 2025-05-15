@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Task inherited-->
+    <record id="view_task_form2_enabling_inherit" model="ir.ui.view">
+        <field name="name">project.task.form.enabling</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_task_vendor_bills" icon="fa-pencil-square-o" context="{'default_task_id': active_id}">
+                    <field string="Vendor Bills" name="vendor_bills_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_task_journals" icon="fa-pencil-square-o" context="{'default_task_id': active_id}">
+                    <field string="Journals" name="journals_count" widget="statinfo"/>
+                </button>
+            </div>
+            <xpath expr="//notebook/page[@name='description_page']" position="after">
+                <page name="task_items" string="Task Items">
+                    <field name="task_item_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="account_id"/>
+                            <field name="analytic_account_id"/>
+                            <field name="budget"/>
+                            <field name="old_invoices"/>
+                            <field name="invoiced"/>
+                            <field name="draft_invoices"/>
+                            <field name="gl_journals"/>
+                            <field name="total_excl_draft"/>
+                            <field name="total_incl_draft"/>
+                            <field name="budget_available"/>
+                            <field name="currency_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Project -->
+    <record id="edit_project_enabling" model="ir.ui.view">
+        <field name="name">project.project.form</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_project_vendor_bills" icon="fa-pencil-square-o" context="{'default_project_id': active_id}">
+                    <field string="Vendor Bills" name="vendor_bills_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_project_journals" icon="fa-pencil-square-o" context="{'default_project_id': active_id}">
+                    <field string="Journals" name="journals_count" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

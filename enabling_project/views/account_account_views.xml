@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_account_list" model="ir.ui.view">
+            <field name="name">account.account.list</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_list"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="requires_project_code"/>
+                    <field name="requires_analytic_account"/>
+                    <field name="requires_analytic_tags"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
