@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+ 
+<odoo>
+  <data>
+  
+  <record id="inherit_partner_order_form" model="ir.ui.view">
+    <field name="name">partner.order.form</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//div[@name='button_box']" position="inside">
+            <button class="oe_stat_button" name="action_view_history" type="object" icon="fa-credit-card">
+                <div class="o_field_widget o_stat_info">
+                    <span class="o_stat_value"><field name="history_count" widget="statinfo"/></span>
+                    <span class="o_stat_text">Historical Transaction</span>
+                </div>
+            </button>
+        </xpath>
+        <xpath expr="//field[@name='website']" position="before">
+            <field name="toi_pakihi"/>
+        </xpath>
+    </field>
+</record>
+
+
+<record id="view_tree_partner_history" model="ir.ui.view">
+        <field name="name">Partner History</field>   
+        <field name="model">partner.history</field>    
+        <field name="arch" type="xml">  
+            <tree editable="bottom">
+                    <field name="partner_id" readonly="0"/>
+                    <field name="sage_document" readonly="0"/>
+                    <field name="fiscyr" readonly="0"/>
+                    <field name="fiscper"/>
+                    <field name="inv_amount"/>
+                    <field name="inv_tax"/>
+                    <field name="inv_disc"/>
+                    <field name="date_post"/>
+                    <field name="date_paid"/>
+            </tree> 
+        </field>
+    </record>
+
+</data>
+      
+</odoo>
