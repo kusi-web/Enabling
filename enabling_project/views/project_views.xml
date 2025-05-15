@@ -8,19 +8,19 @@
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
-                <button class="oe_stat_button" type="object" name="action_view_task_vendor_bills" icon="fa-pencil-square-o" context="{'default_task_id': active_id}">
+                <button class="oe_stat_button" type="object" name="action_view_task_vendor_bills" icon="fa-pencil-square-o" context="{'default_task_id': id}">
                     <field string="Vendor Bills" name="vendor_bills_count" widget="statinfo"/>
                 </button>
-                <button class="oe_stat_button" type="object" name="action_view_task_journals" icon="fa-pencil-square-o" context="{'default_task_id': active_id}">
+                <button class="oe_stat_button" type="object" name="action_view_task_journals" icon="fa-pencil-square-o" context="{'default_task_id': id}">
                     <field string="Journals" name="journals_count" widget="statinfo"/>
                 </button>
             </div>
             <xpath expr="//notebook/page[@name='description_page']" position="after">
                 <page name="task_items" string="Task Items">
                     <field name="task_item_ids">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="name"/>
-                            <field name="account_id"/>
+                            <field name="account_id" domain="[('deprecated', '=', False)]"/>
                             <field name="analytic_account_id"/>
                             <field name="budget"/>
                             <field name="old_invoices"/>
@@ -31,7 +31,7 @@
                             <field name="total_incl_draft"/>
                             <field name="budget_available"/>
                             <field name="currency_id" invisible="1"/>
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </xpath>
@@ -45,10 +45,10 @@
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
-                <button class="oe_stat_button" type="object" name="action_view_project_vendor_bills" icon="fa-pencil-square-o" context="{'default_project_id': active_id}">
+                <button class="oe_stat_button" type="object" name="action_view_project_vendor_bills" icon="fa-pencil-square-o" context="{'default_project_id': id}">
                     <field string="Vendor Bills" name="vendor_bills_count" widget="statinfo"/>
                 </button>
-                <button class="oe_stat_button" type="object" name="action_view_project_journals" icon="fa-pencil-square-o" context="{'default_project_id': active_id}">
+                <button class="oe_stat_button" type="object" name="action_view_project_journals" icon="fa-pencil-square-o" context="{'default_project_id': id}">
                     <field string="Journals" name="journals_count" widget="statinfo"/>
                 </button>
             </div>

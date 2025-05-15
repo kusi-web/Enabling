@@ -11,7 +11,7 @@ class TaskItem(models.Model):
     name = fields.Char(string='Task Name')
     account_id = fields.Many2one('account.account', string='GL Account',
                                  index=True, ondelete="cascade",
-                                 domain="[('deprecated', '=', False),('is_off_balance', '=', False)]",
+                                 domain="[('deprecated', '=', False)]",
                                  check_company=True)
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     budget = fields.Monetary(string='Budget')

@@ -23,7 +23,7 @@ class AccountMove(models.Model):
 
     # Overidden Fileds
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, tracking=True, index=True, copy=False,
-                               states={'draft': [('readonly', False)]},
+                            #    states={'draft': [('readonly', False)]},
                                default=_get_default_invoice_date)
     date = fields.Date(
         string='Date',
@@ -31,7 +31,7 @@ class AccountMove(models.Model):
         index=True,
         readonly=True,
         tracking=True,
-        states={'draft': [('readonly', False)]},
+        # states={'draft': [('readonly', False)]},
         copy=False,
         default=fields.Date.context_today
     )
@@ -76,14 +76,14 @@ class AccountMoveLine(models.Model):
                                  "The quantity is not a legal requirement but is very useful for some reports.")
     price_unit = fields.Float(string='Unit Price', tracking=True, digits='Product Price')
     recurring_invoice = fields.Boolean(default=False)
-    is_checkers_requires = fields.Boolean(
-        related='company_id.is_checkers_requires',
-        readonly=False
-    )
-    is_second_validation = fields.Boolean(
-        related='company_id.is_second_validation',
-        readonly=False
-    )
+    # is_checkers_requires = fields.Boolean(
+    #     related='company_id.is_checkers_requires',
+    #     readonly=False
+    # )
+    # is_second_validation = fields.Boolean(
+    #     related='company_id.is_second_validation',
+    #     readonly=False
+    # )
 
 
     @api.onchange('project_id')
@@ -154,3 +154,7 @@ class AccountMoveLine(models.Model):
         if 'tax_ids' in vals:
             _logger.info("\n\n\t\tupdatign taxes ====111=========")
         return res
+    
+    @api.depends('move_id')
+    def _compute_analytic_account(self):
+        return super()._compute_analytic_account()

@@ -7,7 +7,7 @@
             <field name="model">account.account</field>
             <field name="inherit_id" ref="account.view_account_list"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='company_id']" position="after">
+                <xpath expr="//field[@name='company_ids']" position="after">
                     <field name="requires_project_code"/>
                     <field name="requires_analytic_account"/>
                     <field name="requires_analytic_tags"/>

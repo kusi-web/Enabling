@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_project_task_item,project.task.item,model_project_task_item,account.group_account_invoice,1,1,1,1
+access_project_task_item,project.task.item,model_project_task_item,project.group_project_user,1,1,1,1
