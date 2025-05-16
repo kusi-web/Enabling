@@ -10,9 +10,9 @@
                 <xpath expr="//button[@name='button_draft']" position="before">
                     <button string="Distribute Expenses" class="oe_highlight" name="button_distribute_expense" type="object"/>
                 </xpath>
-                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_tag_ids']" position="after">
+                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_tag_ids']" position="after">
                     <field name="rec_model_id" optional="hide" readonly="1"/>
-                </xpath>
+                </xpath> -->
             </field>
         </record>
 
