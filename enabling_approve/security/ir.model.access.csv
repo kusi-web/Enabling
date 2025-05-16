@@ -5,3 +5,5 @@ access_bill_reject_uinvoice,bill.reject,model_bill_reject,account.group_account_
 access_bill_approval_wizard,approval.wizard,model_approval_wizard,,1,1,1,1
 access_duplicate_vendor_bill_wizard,duplicate.vendor.bill.wizard,model_duplicate_vendor_bill_wizard,,1,1,1,1
 access_reasons_toi_pakihi,reasons.toi.pakihi,model_reasons_toi_pakihi,,1,1,1,1
+enabling_approve.access_analytic_account_approval,access_analytic_account_approval,enabling_approve.model_analytic_account_approval,base.group_user,1,0,0,0
+enabling_approve.access_analytic_approval_user,access_analytic_approval_user,enabling_approve.model_analytic_approval_user,base.group_user,1,0,0,0

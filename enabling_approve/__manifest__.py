@@ -11,6 +11,7 @@
     'depends': [
         'base',
         'account',
+        'purchase',
         'enabling_project',
         # 'nwo_studio_fields',
         'enabling_partner_history',

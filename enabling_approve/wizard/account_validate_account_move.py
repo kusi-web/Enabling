@@ -34,15 +34,16 @@ class ValidateAccountMove(models.TransientModel):
 
 class ApprovalWizard(models.TransientModel):
     _name = 'approval.wizard'
+    _description = 'Approval Wizard'
 
     reason_selection = fields.Selection([
         ('1', 'A suitable hapu business could not be found.'),
         ('2', 'A hapu business was not considered as the supply / job was time critical.'),
         ('3', 'The expenditure is $1000 or less (excl. GST).'),
         ('4', 'Other reason (please add details as log note).')
-    ], string='Reason', tracking=True)
+    ], string='Reason')
 
-    reasons_id = fields.Many2one('reasons.toi.pakihi',string="Reasons", required=True, tracking=True)
+    reasons_id = fields.Many2one('reasons.toi.pakihi', string="Reasons", required=True)
     move_id = fields.Many2one('account.move')
 
     def action_approve(self):

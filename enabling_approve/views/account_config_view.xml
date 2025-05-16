@@ -20,9 +20,9 @@
         <field name="name">reasons.toi.pakihi.tree</field>
         <field name="model">reasons.toi.pakihi</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -30,7 +30,7 @@
     <record id="action_reasons_toi_pakihi" model="ir.actions.act_window">
         <field name="name">Toi Pakihi Reasons</field>
         <field name="res_model">reasons.toi.pakihi</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Create your first Reasons for Toi Pakihi
