@@ -157,4 +157,27 @@ class AccountMoveLine(models.Model):
     
     @api.depends('move_id')
     def _compute_analytic_account(self):
-        return super()._compute_analytic_account()
+        # Try calling super method if it exists
+        super_method = getattr(super(AccountMoveLine, self), '_compute_analytic_account', None)
+        if callable(super_method):
+            super_method()
+
+        _logger.info("Starting _compute_analytic_account")
+        for line in self:
+            company = line.move_id.company_id
+            if not company:
+                _logger.warning("No company set for move %s", line.move_id.id)
+                continue
+
+            group = getattr(company, 'group_by_company', False)
+            _logger.info("Company group_by_company: %s", group)
+
+            if group == 'wm':
+                if line.purchase_order_id:
+                    line.analytic_account_id = line.purchase_order_id.analytic_account_id
+                    line.move_id.project_id = line.purchase_order_id.project_id or line.project_id
+                    line.move_id.task_id = line.purchase_order_id.task_id or line.task_id
+                    line.move_id.task_line_id = line.purchase_order_id.task_line_id or line.task_line_id
+                    line.move_id.po_number = line.purchase_order_id.name
+                    _logger.info("Set project and task from purchase order %s", line.purchase_order_id.name)
+
