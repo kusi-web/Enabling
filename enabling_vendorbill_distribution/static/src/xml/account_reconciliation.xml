@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+    <div t-extend="reconciliation.line.create">
+        <t t-jquery=".o_reconcile_models" t-operation="replace">
+            <div class="btn-group o_reconcile_models" t-if="state.reconcileModels">
+                <t t-foreach="state.reconcileModels" t-as="reconcileModel">
+                    <button class="btn btn-primary"
+                            t-if="!reconcileModel.hide &amp;&amp; reconcileModel.rule_type === 'writeoff_button' &amp;&amp; (reconcileModel.match_journal_ids.length == 0 || reconcileModel.match_journal_ids.includes(state.st_line.journal_id) || state.st_line.journal_id === undefined)"
+                            t-att-data-reconcile-model-id="reconcileModel.id">
+                        <t t-esc="reconcileModel.name"/>
+                    </button>
+                    <button class="btn btn-primary"
+                            t-if="reconcileModel.rule_type === 'writeoff_suggestion' &amp;&amp; state.reconcile_model_id === reconcileModel.id &amp;&amp; (reconcileModel.match_journal_ids.length == 0 || reconcileModel.match_journal_ids.includes(state.st_line.journal_id))"
+                            title="This was the model that generated the lines suggested"
+                            t-att-data-reconcile-model-id="reconcileModel.id">
+                        <span class="fa fa-cog"/> <t t-esc="reconcileModel.name"/>
+                    </button>
+                </t>
+                <p t-if="!state.reconcileModels.length" style="color: #bbb;">To speed up reconciliation, define <a style="cursor: pointer;" class="reconcile_model_create">reconciliation models</a>.</p>
+            </div>
+        </t>
+    </div>
+
+</templates>

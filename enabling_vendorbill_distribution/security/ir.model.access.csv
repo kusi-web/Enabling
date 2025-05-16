@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_distribute_expense_manager,distribute.expense manager,model_distribute_expense,account.group_account_manager,1,0,0,0
+access_distribute_expense_readonly,distribute.expense readonly,model_distribute_expense,account.group_account_readonly,1,0,0,0
+access_distribute_expense_uinvoice,distribute.expense,model_distribute_expense,account.group_account_invoice,1,1,1,1
