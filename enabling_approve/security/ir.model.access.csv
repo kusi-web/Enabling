@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bill_reject_manager,bill.reject manager,model_bill_reject,account.group_account_manager,1,0,0,0
+access_bill_reject_readonly,bill.reject readonly,model_bill_reject,account.group_account_readonly,1,0,0,0
+access_bill_reject_uinvoice,bill.reject,model_bill_reject,account.group_account_invoice,1,1,1,1
+access_bill_approval_wizard,approval.wizard,model_approval_wizard,,1,1,1,1
+access_duplicate_vendor_bill_wizard,duplicate.vendor.bill.wizard,model_duplicate_vendor_bill_wizard,,1,1,1,1
+access_reasons_toi_pakihi,reasons.toi.pakihi,model_reasons_toi_pakihi,,1,1,1,1

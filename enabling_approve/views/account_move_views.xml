@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- <record id="view_in_invoice_tree_enabling" model="ir.ui.view">
+            <field name="name">account.in.invoice.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="approval_stage" invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund','in_receipt')"/>
+                </xpath>
+            </field>
+        </record> -->
+
+        <record id="view_account_form" model="ir.ui.view">
+            <field name="name">account.account.form</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='internal_group']" position="after">
+                    <field name="is_vendor_without_approval"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_move_form_approve" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_post'][2]" position="replace">
+                  <button name="action_post" invisible="1"/>
+                </xpath>
+                <xpath expr="//button[@name='action_post']" position="replace">
+                    <!-- <button name="action_post" string="Confirm" class="oe_highlight" type="object" groups="account.group_account_user" attrs="{'invisible': ['|', '|','|', ('group_by_company', '=', 'wr'), ('state', '!=', 'draft'), ('auto_post', '=', True), ('move_type', '=', 'entry')]}"/> -->
+                    <button name="action_post" string="Confirm" class="oe_highlight" type="object" groups="account.group_account_user" attrs="{'invisible': [('group_by_company', '=', 'wr'), '|', ('move_type', 'in', ('in_invoice','in_refund')), '|', ('state', '!=', 'draft'), ('auto_post', '=', True)]}"/>
+                </xpath>
+                <xpath expr="//label[@for='journal_id']" position="before">
+                    <field name="tolerance_percentage" invisible="1"/>
+                    <field name="toi_pakihi" readonly="1"/>
+                    <!-- <field name="reason_selection" invisible="1"/> -->
+                    <field name="reasons_id" invisible="0" readonly="1"/>
+                    <field name="tolerance_price" invisible="1"/>
+                    <field name="first_approver_id" attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))], 'readonly': [('approval_stage', 'not in', ('not_sent', 'rejected'))]}"/>
+                    <field name="second_approver_id" attrs="{'invisible': ['|',('is_second_validation', '=', False), ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))], 'readonly': [('approval_stage', 'not in', ('not_sent', 'rejected'))]}"/>
+                    <field name="show_first_approval" invisible="1"/>
+                    <field name="show_second_approval" invisible="1"/>
+                    <field name="show_recall_btn" invisible="1"/>
+                    <field name="last_reject_reason" invisible="1"/>
+                    <field name="group_by_company" invisible="1"/>
+                    <field name="bool_toi_pakihi_rules" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_reference']" position="after">
+                    <field name="is_checkers_requires" invisible="1"/>
+                    <field name="is_second_validation" invisible="1"/>
+                    <field name="analytic_account_id" attrs="{'invisible': ['|', ('is_second_validation', '=', True), ('is_checkers_requires', '=', True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='to_check']" position="after">
+                  <field name="x_css" />
+                </xpath>
+                <xpath expr="//sheet/group[1]/group[2]" position="inside">
+                    <field name="category_id" options="{'color_field': 'color', 'no_create_edit': True}" attrs="{'invisible': ['|',('move_type', '!=', 'out_invoice'),('company_id', 'not in', (9,11))]}"/>
+                </xpath>
+                <xpath expr="//button[@name='action_post']" position="before">
+                    <button name="action_request_approval" string="Confirm/Send for Approval" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|','|','|', ('state', '=', 'cancel'), ('is_second_validation', '=', True), ('is_checkers_requires', '=', True), ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt')), ('approval_stage', 'not in', ('not_sent', 'rejected'))]}"/>
+                    <button name="action_request_approval" string="Send for Approval" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|','|','|', ('state', '=', 'cancel'), ('is_second_validation', '=', False), ('is_checkers_requires', '=', False), ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt')), ('approval_stage', 'not in', ('not_sent', 'rejected'))]}"/>
+                    <button name="action_approve" string="First Approval" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|', ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt')), ('show_first_approval', '=', False)]}"/>
+                    <button name="action_post" string="Final Approval" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|', ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt')), ('show_second_approval', '=', False)]}"/>
+                    <button name="action_reject" string="Reject" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|', ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt')), ('show_first_approval', '=', False), ('show_second_approval', '=', False)]}"/>
+                    <button name="action_recall" string="Recall" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|', ('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt')), ('show_recall_btn', '=', False)]}"/>
+                </xpath>
+                <!-- <xpath expr="//button[7]" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|',('state', '!=', 'draft'), ('auto_post', '=', True), ('move_type', 'in', ('in_invoice'))]}</attribute>
+                </xpath> -->
+                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                    <attribute name="attrs">{'invisible': [(('state', '=', 'cancel'))]}</attribute>
+                </xpath>
+                <xpath expr="//div/h1" position="inside">
+                    <div class="float-right">
+                        <h3>
+                            <field name="approval_stage" readonly="1" attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}"/>
+                        </h3>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="po_number" invisible="0"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_move_form_enabling" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                    <field name="project_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))]}"/>
+                    <field name="task_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))], 'required': [('project_id', '!=', False)]}"/>
+                    <field name="task_line_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))], 'required': [('project_id', '!=', False)]}"/>
+                    <!-- <field name="task_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))]}"/>
+                    <field name="task_line_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt', 'entry'))]}"/> -->
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                    <field name="project_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))]}"/>
+                    <field name="task_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))], 'required': [('project_id', '!=', False)]}"/>
+                    <field name="task_line_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))], 'required': [('project_id', '!=', False)]}"/>
+                    <!-- <field name="task_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))]}"/>
+                    <field name="task_line_id" attrs="{'invisible': [('parent.move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))]}"/> -->
+                    <field name="taskline_account_id" invisible="1"/>
+                    <field name="taskline_analytic_account_id" invisible="1"/>
+                    <field name="is_checkers_requires" invisible="1"/>
+                    <field name="is_second_validation" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                    <attribute name="context">{
+                        'default_move_type': context.get('default_move_type'),
+                        'journal_id': journal_id,
+                        'default_partner_id': commercial_partner_id,
+                        'default_currency_id': currency_id or company_currency_id,
+                        'default_analytic_account_id': analytic_account_id,
+                        'default_task_line_id': task_line_id,
+                        'default_project_id': project_id,
+                        'default_task_id': task_id
+                    }</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="recurring_doc" string="Recurring Invoice"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="after">
+                    <field name="project_id" />
+                    <field name="task_id" />
+                    <field name="task_line_id" />
+                </xpath>
+                <xpath expr="//field[@name='line_ids']" position="attributes">
+                    <attribute name="context">{
+                        'default_move_type': context.get('default_move_type'),
+                        'line_ids': line_ids,
+                        'journal_id': journal_id,
+                        'default_partner_id': commercial_partner_id,
+                        'default_currency_id': currency_id or company_currency_id,
+                        'default_project_id': project_id,
+                        'default_task_id': task_id,
+                        'default_task_line_id': task_line_id
+                    }</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
+                    <attribute name="attrs">{'required': [('display_type', '=', False)], 'readonly': [('is_second_validation', '=', True), ('is_checkers_requires', '=', True),('taskline_account_id', '!=', False)]}</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('is_second_validation', '=', True), ('is_checkers_requires', '=', True),('taskline_analytic_account_id', '!=', False)]}</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- To first approve bill batch action -->
+        <record id="first_approve_vendor_bill_server_action_batch" model="ir.actions.server">
+            <field name="name">First Approval</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="binding_model_id" ref="model_account_move"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.action_first_approve_multi()
+            </field>
+        </record>
+
+        <!-- To final approve and post bill batch action -->
+        <record id="action_final_approve_validate_account_move" model="ir.actions.act_window">
+            <field name="name">Final Approval &amp; Post entries</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">validate.account.move</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.validate_account_move_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+            <field name="help">This wizard will validate all journal entries selected. Once journal entries are validated, you can not update them anymore.</field>
+            <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+
+        <!-- ===========PO Form View=sushma========= -->
+        <record id="view_purchase_order_form" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state', 'in', ['done', 'cancel', 'first_approval_sent', 'second_approval_sent'])]}</attribute>
+                </xpath>
+            </field>
+        </record>
+        <!-- EOL========sushma== -->
+    </data>
+</odoo>

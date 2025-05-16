@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <!-- Form view -->
+    <record id="view_my_model_form" model="ir.ui.view">
+        <field name="name">reasons.toi.pakihi.form</field>
+        <field name="model">reasons.toi.pakihi</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree view -->
+    <record id="view_my_model_tree" model="ir.ui.view">
+        <field name="name">reasons.toi.pakihi.tree</field>
+        <field name="model">reasons.toi.pakihi</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for the Toi Pakihi Reasons Menu-->
+    <record id="action_reasons_toi_pakihi" model="ir.actions.act_window">
+        <field name="name">Toi Pakihi Reasons</field>
+        <field name="res_model">reasons.toi.pakihi</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create your first Reasons for Toi Pakihi
+            </p>
+        </field>
+    </record>
+
+    <!-- Add the menu under Accounting -> Configuration -> Accounting -> Toi Pakihi Reasons-->
+    <menuitem id="menu_reasons_toi_pakihi" name="Toi Pakihi Reasons"
+        parent="account.menu_finance_configuration"
+        sequence="10"
+        action="action_reasons_toi_pakihi"
+    />
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.approve</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="Approver List" name="approver_list">
+                    <group>
+                        <field name="first_approver_ids"/>
+                        <field name="second_approver_ids"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="bool_toi_pakihi_rules" widget="boolean_switch"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

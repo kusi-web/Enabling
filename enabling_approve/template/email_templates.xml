@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <record id="email_template_vendor_bill_approval" model="mail.template">
+            <field name="name">Vendor Bill Approval Request</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="email_from">${(object.company_id.email|safe)}</field>
+            <field name="subject">Approval Request</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <header>
+                        <strong>Vendor Bill Approval Request</strong>
+                    </header>
+                    <p>The following invoice is awaiting your approval.  Click on the link below to view the invoice.</p>
+                    % if ctx.get('link')
+                    <div style="display: inline-block; margin: 15px; text-align: center">
+                        <a href="${ctx.link}" target="_blank"
+                            style="padding: 5px 10px; color: #FFFFFF; text-decoration: none; background-color: #875A7B; border: 1px solid #875A7B; border-radius: 3px"
+                        >View Invoice</a>
+                    </div>
+                    % endif
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_vendor_bill_rejected" model="mail.template">
+            <field name="name">Vendor Bill Rejected</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="email_from">${(object.company_id.email|safe)}</field>
+            <field name="subject">Vendor Bill rejected - ${object.company_id.name | safe}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <header>
+                        <strong>Vendor Bill Rejected</strong>
+                    </header>
+                    <p>Vendor bill: ${object.ref} was rejected with reason ${object.last_reject_reason}</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>
