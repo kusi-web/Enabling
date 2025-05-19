@@ -1,0 +1,1 @@
+SELECT state, id, invoice_payment_term_id FROM account_move WHERE name ILIKE '%RENTAL/0000000038%' OR ref ILIKE '%RENTAL/0000000038%' ORDER BY state, id

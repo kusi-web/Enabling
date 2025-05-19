@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+<record id="wizard_payment_eft_format_selection_view" model="ir.ui.view">
+    <field name="name">wizard.payment.eft.format.selection.view</field>
+    <field name="model">payment.eft.format.selection.wizard</field>
+    <field name="arch" type="xml">
+        <form>
+            <group>
+                <group>
+                    <field name="eft_type" widget="radio" options="{'horizontal': true}"/>
+                    <field name="report_format" widget="radio" options="{'horizontal': true}"/>
+                    <br/>
+                    <field name="eft_format"/>
+                </group>
+            </group>
+            <footer>
+                <button name="action_download_excel_file" string="Print" type="object" class="oe_highlight"/>
+                <button string="Cancel" class="btn-secondary" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+<record id="action_wizard_payment_eft_format_selection" model="ir.actions.act_window">
+    <field name="name">Print EFT File</field>
+    <field name="res_model">payment.eft.format.selection.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="wizard_payment_eft_format_selection_view"/>
+    <field name="binding_model_id" ref="account.model_account_payment"/>
+    <field name="target">new</field>
+</record>
+
+
+</odoo>

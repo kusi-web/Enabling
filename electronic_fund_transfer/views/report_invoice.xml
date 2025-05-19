@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<template id="report_invoice_document" inherit_id="account.report_invoice_document">
+    <xpath expr="//span[@t-field='o.invoice_payment_term_id.note']" position="after">
+        <span t-if='o.invoice_payment_term_id.is_directdebit'><em>Direct Debit Note: </em>Unless advice to the contrary is received from you by <span t-esc="o.invoice_date_due.replace(day=o.invoice_date_due.day-2)" />, the amount of <span t-field="o.amount_total" /> will be directly debited to your bank account on <span t-esc="o.invoice_date_due" />.</span>    
+    </xpath>
+</template>
+
+
+</odoo>

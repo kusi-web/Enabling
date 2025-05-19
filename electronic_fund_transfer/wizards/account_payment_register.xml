@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<record id="view_account_payment_register_form" model="ir.ui.view">
+    <field name="name">account.payment.register.form.eft</field>
+    <field name="model">account.payment.register</field>
+    <field name="inherit_id" ref="account.view_account_payment_register_form" />
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='line_ids']" position="after">
+            <!-- include payment_method_code so we can use it in domains -->
+            <field name="payment_method_code" invisible="1" />
+            <field name="has_been_exported" invisible="1" />
+        </xpath>
+
+        <xpath expr="//button[@name='action_create_payments']" position="attributes">
+            <!-- hide default button when payment method == EFT -->
+            <attribute name="attrs">{'invisible': [('payment_method_code', '=', 'eft'), ('eft_type', '!=', False)]}</attribute>
+        </xpath>
+
+        <xpath expr="//button[@name='action_create_payments']" position="after">
+            <!-- new button for directdebit EFT -->
+            <button string="Create Payment &amp; Direct Debit EFT" name="action_create_directdebit" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('has_been_exported', '=', True), ('payment_method_code', '!=', 'eft'), ('eft_type', '!=', 'dd')]}" style="margin-left: 0;" />
+            <button string="Create Payment &amp; Download EFT File" name="action_create_eft" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('has_been_exported', '=', True), ('payment_method_code', '!=', 'eft'), ('eft_type', '!=', 'norm')]}" style="margin-left: 0;" />
+        </xpath>
+
+        <xpath expr="//group[@name='group2']" position="inside">
+            <!-- add directdebit-specific fields -->
+            <field name="eft_type" attrs="{'invisible': [('payment_method_code', '!=', 'eft')]}" />
+            <field name="report_format" widget="radio" options="{'horizontal': true}" attrs="{'invisible': [('payment_method_code', '!=', 'eft')]}"/>
+            <field name="eft_format" attrs="{'invisible': [('payment_method_code', '!=', 'eft')]}" />
+        </xpath>
+    </field>
+</record>
+
+
+</odoo>
