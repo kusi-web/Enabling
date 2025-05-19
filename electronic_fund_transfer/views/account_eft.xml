@@ -1,208 +1,215 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data noupdate="1">
+        <record id="account_payment_method_eft_in" model="account.payment.method">
+            <field name="name">EFT</field>
+            <field name="code">eft</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <record id="account_payment_method_eft_out" model="account.payment.method">
+            <field name="name">EFT</field>
+            <field name="code">eft</field>
+            <field name="payment_type">outbound</field>
+        </record>
+    </data>
 
-
-<data noupdate="1">
-    <record id="accovunt_payment_method_eft_in" model="account.payment.method">
-        <field name="name">EFT</field>
-        <field name="code">eft</field>
-        <field name="payment_type">inbound</field>
+    <record id="account_journal_eft" model="ir.ui.view">
+        <field name="name">account_journal_eft.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="bank_id" position="before">
+                <field name="eft_format"/>
+                <field name="bulk_individual_indicator" 
+                       required="eft_format == 'bnz' and type == 'bank'"
+                       invisible="eft_format != 'bnz'"/>
+                <field name="bnz_transaction_code"
+                       required="eft_format == 'bnz' and type == 'bank'"
+                       invisible="eft_format != 'bnz'"/>
+                <field name="bnz_directdebit_authority"
+                       invisible="eft_format != 'bnz'"/>
+                <field name="originating_bank"
+                       required="eft_format == 'westpac' and type == 'bank'"
+                       invisible="eft_format != 'westpac'"/>
+                <field name="originating_bank_branch"
+                       required="eft_format == 'westpac' and type == 'bank'"
+                       invisible="eft_format != 'westpac'"/>
+                <field name="anz_trace_bsb_number"
+                       required="eft_format == 'anz' and type == 'bank'"
+                       invisible="eft_format != 'anz'"/>
+                <field name="anz_trace_account_number"
+                       required="eft_format == 'anz' and type == 'bank'"
+                       invisible="eft_format != 'anz'"/>
+                <field name="anz_identification_number"
+                       required="eft_format == 'anz' and type == 'bank'"
+                       invisible="eft_format != 'anz'"/>
+                <field name="anz_notes"
+                       required="eft_format == 'anz' and type == 'bank'"
+                       invisible="eft_format != 'anz'"/>
+            </field>
+            <field name="bank_id" position="attributes">
+                <attribute name="invisible">bank_account_id == False</attribute>
+                <attribute name="required">type == 'bank' and bank_account_id != False</attribute>
+            </field>
+            <field name="bank_id" position="after">
+                <field name="bank_acc_number" required="type == 'bank'"/>
+            </field>
+        </field>
     </record>
-    <record id="account_payment_method_eft_out" model="account.payment.method">
-        <field name="name">EFT</field>
-        <field name="code">eft</field>
-        <field name="payment_type">outbound</field>
-    </record>
-</data>
 
-
-<record id="account_journal_eft" model="ir.ui.view">
-    <field name="name">account_journal_eft.form</field>
-    <field name="model">account.journal</field>
-    <field name="inherit_id" ref="account.view_account_journal_form"/>
-    <field name="arch" type="xml">
-        <field name="bank_id" position="before">
-            <field name="eft_format"/>
-            <field attrs="{'required':[('eft_format','=','bnz'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','bnz')]}" name="bulk_individual_indicator"/>
-            <field required="eft_format == 'bnz' and type == 'bank'" invisible="eft_format != 'bnz'" name="bulk_individual_indicator"/>
-
-            <field attrs="{'required':[('eft_format','=','bnz'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','bnz')]}" name="bnz_transaction_code"/>
-            <field required="eft_format == 'bnz' and type == 'bank'" invisible="eft_format != 'bnz'" name="bulk_individual_indicator"/>
-
-            <field attrs="{'invisible':[('eft_format','!=','bnz')]}" name="bnz_directdebit_authority" />
-            
-            <field attrs="{'required':[('eft_format','=','westpac'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','westpac')]}" name="originating_bank"/>
-            <field attrs="{'required':[('eft_format','=','westpac'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','westpac')]}" name="originating_bank_branch"/>
-            <field attrs="{'required':[('eft_format','=','anz'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','anz')]}" name="anz_trace_bsb_number"/>
-            <field attrs="{'required':[('eft_format','=','anz'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','anz')]}" name="anz_trace_account_number"/>
-            <field attrs="{'required':[('eft_format','=','anz'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','anz')]}" name="anz_identification_number"/>
-            <field attrs="{'required':[('eft_format','=','anz'), ('type', '=', 'bank')], 'invisible':[('eft_format','!=','anz')]}" name="anz_notes"/>
+    <!-- <record id="view_account_supplier_payment_list_eft" model="ir.ui.view">
+        <field name="name">account.payment.supplier.list.eft</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_supplier_payment_list"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="decoration-danger">status_eft == 'false'</attribute>
+                <attribute name="decoration-success">status_eft != 'false'</attribute>
+            </list>
+            <field name="name" position="after">
+                <field name="status_eft" invisible="1"/>
+            </field>
         </field>
-        <field name="bank_id" position="attributes">
-            <attribute name="attrs">{'invisible': [('bank_account_id', '=', False)], 'required': [('type', '=', 'bank'), ('bank_account_id', '!=', False)]}</attribute>
-            <attribute name="context">{'default_eft_format': eft_format}</attribute>
-        </field>
-        <field name="bank_id" position="after">
-            <field name="bank_acc_number" attrs="{'required': [('type', '=', 'bank')]}"/>
-        </field>
-    </field>
-</record>
+    </record> -->
 
-<record id="indimedi_eft_inherited_view_account_supplier_payment_list" model="ir.ui.view">
-    <field name="name">indimedi.eft.inherited.account.supplier.payment.list</field>
-    <field name="model">account.payment</field>
-    <field name="inherit_id" ref="account.view_account_supplier_payment_list"/>
-    <field name="arch" type="xml">
-        <list position="attributes">
-            <attribute name="decoration-danger">status_eft == 'false'</attribute>
-            <attribute name="decoration-success">status_eft != 'false'</attribute>
-        </list>
-        <field name="name" position="after">
-            <field invisible="1" name="status_eft"/>
+    <!-- <record id="view_account_payment_list_bank_acc" model="ir.ui.view">
+        <field name="name">account.payment.list.bank.acc</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_list"/>
+        <field name="arch" type="xml">
+            <field name="payment_method_line_id" position="after">
+                <field name="partner_bank_acc_id"/>
+            </field>
         </field>
-    </field>
-</record>
+    </record> -->
 
-<record id="indimedi_bank_acc_view_account_payment_list" model="ir.ui.view">
-    <field name="name">indimedi.bank_acc.inherited.account.payment.list</field>
-    <field name="model">account.payment</field>
-    <field name="inherit_id" ref="account.view_account_payment_list"/>
-    <field name="arch" type="xml">
-        <xpath expr="//list/field[@name='payment_method_line_id']" position="after">
-            <field name="partner_bank_acc_id"/>
-        </xpath>
-    </field>
-</record>
-
-<record id="indimedi_eft_inherited_view_account_payment_form" model="ir.ui.view">
-    <field name="name">indimedi.eft.inherited.account.payment.form</field>
-    <field name="model">account.payment</field>
-    <field name="inherit_id" ref="account.view_account_payment_form"/>
-    <field name="arch" type="xml">
-        <xpath expr="//form//sheet//group//group//field[@name='payment_method_line_id']" position="attributes">
-            <attribute name="string">Payment Method Type</attribute>
-        </xpath>
-        <xpath expr="//form/sheet/group" position="after">
-            <notebook>
-                <page name="eft_log_entries" string="EFT Logs">
-                    <field name="log_ids">
-                        <list>
-                            <field name="user_id"/>
-                            <field name="created_date"/>
-                        </list>
-                    </field>
-                </page>
-            </notebook>
-        </xpath>
-    </field>
-</record>
-
-<record id="indimedi_eft_view_res_bank_form" model="ir.ui.view">
-    <field name="name">indimedi.eft.res.bank.form</field>
-    <field name="model">res.bank</field>
-    <field name="inherit_id" ref="base.view_res_bank_form"/>
-    <field name="arch" type="xml">
-        <xpath expr="//form//group//field[@name='bic']" position="after">
-            <field name="originating_bank"/>
-            <field name="originating_bank_branch"/>
-            <field name="eft_format"/>
-        </xpath>
-        <field name="state" position="attributes">
-            <attribute name="required">1</attribute>
-        </field>
-        <field name="bic" position="attributes">
-            <attribute name="required">1</attribute>
-        </field>
-    </field>
-</record>
-
-<record id="indimedi_eft_inherited_view_account_payment_search" model="ir.ui.view">
-    <field name="name">indimedi.eft.inherited.account.payment.search</field>
-    <field name="model">account.payment</field>
-    <field name="inherit_id" ref="account.view_account_payment_search"/>
-    <field name="arch" type="xml">
-        <xpath expr="//search" position="inside">
-            <filter domain="[('journal_id.eft_format','=','anz')]" name="anz_eft_format" string="ANZ"/>
-            <filter domain="[('journal_id.eft_format','=','asb')]" name="asb_eft_format" string="ASB"/>
-            <filter domain="[('journal_id.eft_format','=','bnz')]" name="bnz_eft_format" string="BNZ"/>
-            <filter domain="[('journal_id.eft_format','=','kiwi')]" name="kiwi_eft_format" string="KIWIBANK"/>
-            <filter domain="[('journal_id.eft_format','=','westpac')]" name="westpac_eft_format" string="WESTPAC"/>
-            <separator/>
-            <filter domain="[('status_eft','=','false')]" name="pending_eft_file" string="EFT Pending"/>
-            <filter domain="[('status_eft','=','true')]" name="done_eft_file" string="EFT Done"/>
-            <group expand="0" name="group_by" string="Group By">
-                <filter name="eft_format_id" context="{'group_by': 'eft_format_id'}" string="EFT Format"/>
-                <filter name="status_eft" context="{'group_by': 'status_eft'}" string="EFT Status"/>
+    <record id="view_account_payment_form_eft" model="ir.ui.view">
+        <field name="name">account.payment.form.eft</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_method_line_id" position="attributes">
+                <attribute name="string">Payment Method Type</attribute>
+            </field>
+            <group position="after">
+                <notebook>
+                    <page name="eft_log_entries" string="EFT Logs">
+                        <field name="log_ids">
+                            <list>
+                                <field name="user_id"/>
+                                <field name="created_date"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
             </group>
-        </xpath>
-    </field>
-</record>
+        </field>
+    </record>
 
-<record id="partner_bank_eft" model="ir.ui.view">
-    <field name="name">partner_bank_eft.form</field>
-    <field name="model">res.partner.bank</field>
-    <field name="inherit_id" ref="base.view_partner_bank_form"/>
-    <field name="arch" type="xml">
-        <xpath expr="/form" position="replace">
-            <form string="Bank account">
-                <header>
-                    <button name="authorise_bank" string="Authorize" type="object" attrs="{'invisible': [('state', '=', 'authorised')]}"/>
-                    <field name="state" readonly="1" widget="statusbar"/>
-                </header>
-                <sheet>
-                    <group>
-                        <group><field name="acc_number"/></group>
+    <record id="view_res_bank_form_eft" model="ir.ui.view">
+        <field name="name">res.bank.form.eft</field>
+        <field name="model">res.bank</field>
+        <field name="inherit_id" ref="base.view_res_bank_form"/>
+        <field name="arch" type="xml">
+            <field name="bic" position="after">
+                <field name="originating_bank"/>
+                <field name="originating_bank_branch"/>
+                <field name="eft_format"/>
+            </field>
+            <field name="state" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="bic" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_payment_search_eft" model="ir.ui.view">
+        <field name="name">account.payment.search.eft</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <filter string="ANZ" name="anz_eft_format" domain="[('journal_id.eft_format', '=', 'anz')]"/>
+                <filter string="ASB" name="asb_eft_format" domain="[('journal_id.eft_format', '=', 'asb')]"/>
+                <filter string="BNZ" name="bnz_eft_format" domain="[('journal_id.eft_format', '=', 'bnz')]"/>
+                <filter string="KIWIBANK" name="kiwi_eft_format" domain="[('journal_id.eft_format', '=', 'kiwi')]"/>
+                <filter string="WESTPAC" name="westpac_eft_format" domain="[('journal_id.eft_format', '=', 'westpac')]"/>
+                <separator/>
+                <filter string="EFT Pending" name="pending_eft_file" domain="[('status_eft', '=', 'false')]"/>
+                <filter string="EFT Done" name="done_eft_file" domain="[('status_eft', '=', 'true')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="EFT Format" name="eft_format_id" context="{'group_by': 'eft_format_id'}"/>
+                    <filter string="EFT Status" name="status_eft" context="{'group_by': 'status_eft'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_partner_bank_form_eft" model="ir.ui.view">
+        <field name="name">res.partner.bank.form.eft</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form"/>
+        <field name="arch" type="xml">
+            <form position="replace">
+                <form>
+                    <header>
+                        <button name="authorise_bank" string="Authorize" type="object" invisible="state == 'authorised'"/>
+                        <field name="state" readonly="1" widget="statusbar"/>
+                    </header>
+                    <sheet>
                         <group>
-                            <field name="bank_id" position="attributes">
-                                <attribute name="required">1</attribute>
-                            </field>
-                            <field name="partner_id"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="currency_id" groups="base.group_multi_currency" options="{'no_create': True}"/>
+                            <group>
+                                <field name="acc_number"/>
+                            </group>
+                            <group>
+                                <field name="bank_id" required="1"/>
+                                <field name="partner_id"/>
+                            </group>
                         </group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="originating_bank"/>
-                            <field name="originating_bank_branch"/>
-                            <field name="analysis"/>
-                            <field name="particulars"/>
-                            <field name="reference"/>
+                            <group>
+                                <field name="currency_id" groups="base.group_multi_currency" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            </group>
                         </group>
                         <group>
-                            <field name="create_uid" readonly="1"/>
-                            <field name="create_date" readonly="1"/>
-                            <field name="authorized_by" readonly="1"/>
-                            <field name="authorized_date" readonly="1"/>
+                            <group>
+                                <field name="originating_bank"/>
+                                <field name="originating_bank_branch"/>
+                                <field name="analysis"/>
+                                <field name="particulars"/>
+                                <field name="reference"/>
+                            </group>
+                            <group>
+                                <field name="create_uid" readonly="1"/>
+                                <field name="create_date" readonly="1"/>
+                                <field name="authorized_by" readonly="1"/>
+                                <field name="authorized_date" readonly="1"/>
+                            </group>
                         </group>
-                    </group>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
             </form>
-        </xpath>
-    </field>
-</record>
+        </field>
+    </record>
 
-<record id="view_payment_term_form" model="ir.ui.view">
-    <field name="name">account.payment.term.form.eft</field>
-    <field name="model">account.payment.term</field>
-    <field name="inherit_id" ref="account.view_payment_term_form" />
-    <field name="arch" type="xml">
-        <xpath expr="//field[@name='name']" position="after">
-            <field name="is_directdebit" />
-        </xpath>
-    </field>
-</record>
-
-
+    <record id="view_payment_term_form_eft" model="ir.ui.view">
+        <field name="name">account.payment.term.form.eft</field>
+        <field name="model">account.payment.term</field>
+        <field name="inherit_id" ref="account.view_payment_term_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="is_directdebit"/>
+            </field>
+        </field>
+    </record>
 </odoo>

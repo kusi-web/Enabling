@@ -1,4 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_eft_log_entry,access_eft_log_entry,model_eft_log_entry,base.group_user,1,1,1,1
-payment_acquirer_all,payment.acquirer.all,payment.model_payment_acquirer,base.group_user,1,1,1,1
 payment_wizard,payment_wizard,model_payment_eft_format_selection_wizard,account.group_account_invoice,1,1,1,1

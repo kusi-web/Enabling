@@ -881,18 +881,18 @@ class AccountJournal(models.Model):
         string="Trace BSB Number", size=7)
     anz_trace_account_number = fields.Char(
         string="Trace Account Number", size=9)
-    anz_identification_number = fields.Integer(string="User ID", size=6)
+    anz_identification_number = fields.Integer(string="User ID")
     anz_notes = fields.Char(string="Description", size=12)
 
-    @api.model
-    def create(self, vals):
-        res = super(AccountJournal, self).create(vals)
-        originating_bank, originating_bank_branch = '', ''
-        if vals:
-            if 'originating_bank' in vals:
-                originating_bank = vals['originating_bank']
-            if 'originating_bank_branch' in vals:
-                originating_bank_branch = vals['originating_bank_branch']
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            originating_bank, originating_bank_branch = '', ''
+            if vals:
+                if 'originating_bank' in vals:
+                    originating_bank = vals['originating_bank']
+                if 'originating_bank_branch' in vals:
+                    originating_bank_branch = vals['originating_bank_branch']
             if originating_bank and originating_bank_branch:
                 if len(originating_bank) > 2:
                     raise UserError(_("For Westpac Bank Account Bank Code Must 2 Digits Long Only!!"))
@@ -926,7 +926,7 @@ class AccountJournal(models.Model):
                         if length_acc < 15:
                             raise UserError(
                                 _('Bank account and credit card numbers should be more than 15 digits long.'))
-        return res
+        return super().create(vals_list)
 
     def write(self, vals):
         res = super(AccountJournal, self).write(vals)
@@ -1056,15 +1056,15 @@ class ResPartnerBank(models.Model):
             'author_id': self.env.user.partner_id.id
         })
 
-    @api.model
-    def create(self, vals):
-        res = super(ResPartnerBank, self).create(vals)
-        acc_no = vals['acc_number']
-        acc_no = re.sub(r'-', "", acc_no)
-        acc_no = re.sub(r' ', "", acc_no)
-        if not acc_no.isdigit():
-            raise UserError(
-                _('Bank account and credit card numbers should be numerical.'))
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            acc_no = vals.get('acc_number')
+            if acc_no:
+                acc_no = re.sub(r'-', "", acc_no)
+                acc_no = re.sub(r' ', "", acc_no)
+                if not acc_no.isdigit():
+                    raise UserError(_('Bank account and credit card numbers should be numerical.'))
         return res
 
     def write(self, vals):
