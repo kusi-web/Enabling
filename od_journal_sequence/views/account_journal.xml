@@ -10,13 +10,17 @@
                     <group>
                         <group string="Sequence">
                             <field name="sequence_number_next"/>
-                            <field name="sequence_id" required="0" attrs="{'readonly': 1}"/>
-                            <button name="create_journal_sequence" string="Set Sequence" type="object" class="oe_highlight"
-                                    attrs="{'invisible': [('sequence_id','!=',False),('refund_sequence_id','!=',False)]}"/>
+                            <field name="sequence_id" required="0"
+                                   context="{'default_name': name, 'default_company_id': company_id, 'default_implementation': 'no_gap',
+                                   'default_padding': 4, 'default_use_date_range': True, 'default_prefix': code + '/%%(range_year)s/'}"/>
+                            <field name="lyra_company_sequence"/>
                         </group>
                         <group string="Refund Sequence">
                             <field name="refund_sequence_number_next"/>
-                            <field name="refund_sequence_id" required="0" attrs="{'readonly': 1}"/>
+                            <field name="refund_sequence_id" required="0"
+                                   context="{'default_name': name, 'default_company_id': company_id, 'default_implementation': 'no_gap',
+                                    'default_padding': 4, 'default_use_date_range': True, 'default_prefix': 'R' + code + '/%%(range_year)s/'}"/>
+                            <field name="lyra_company_refund_sequence"/>
                         </group>
                     </group>
                 </page>
