@@ -9,7 +9,8 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@id='header_right_group']/field[@name='date']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('move_type', 'in', ('out_receipt'))], 'readonly': [('state', '!=', 'draft')]}</attribute>
+                    <attribute name="invisible">move_type in ('out_receipt')</attribute>
+                    <attribute name="readonly">state != 'draft'</attribute>
                 </xpath>
             </field>
         </record>
