@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<record model="ir.ui.view" id="asset_res_company">
-        <field name="name">res.company</field>
+    <record model="ir.ui.view" id="asset_res_company">
+        <field name="name">res.company.form.inherit.asset</field>
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Account" name="accounts">
+                <page string="Asset Accounts" name="asset_accounts">
                     <group>
-                        <group string="Value Addition">
-                        	<field name="value_clearing_account"/>
-                        </group>
-                        <group string="Revalue">
-                        	<field name="revalue_clearing_account"/>
+                        <!-- <group string="Value Addition">
+                            <field name="value_clearing_account"/>
+                        </group> -->
+                        <!-- <group string="Revalue">
+                            <field name="revalue_clearing_account"/>
                         </group>
                         <group string="Gain/Loss Account">
                             <field name="gain_account_id"/>
                             <field name="loss_account_id"/>
-                        </group>
+                        </group> -->
                     </group>
                 </page>
             </xpath>
         </field>
     </record>
-
 </odoo>

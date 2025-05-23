@@ -33,5 +33,5 @@
         <field name="target">new</field>
     </record>
     
-    <menuitem id="import_asset_revaluation_menu" name="Import Asset Revaluations" action="action_import_asset_revaluation" parent="account.menu_finance_entries_management" sequence="102" />
+    <!-- <menuitem id="import_asset_revaluation_menu" name="Import Asset Revaluations" action="action_import_asset_revaluation" parent="account.menu_finance_entries_management" sequence="102" /> -->
 </odoo>

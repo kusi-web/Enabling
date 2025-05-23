@@ -15,13 +15,17 @@ _logger = logging.getLogger(__name__)
 
 MAX_NAME_LENGTH = 50
 
-class assets_report(models.AbstractModel):
-    _inherit = 'account.assets.report'
+class assets_report(models.Model):
+    _name = 'account.assets.report'  
+    _description = 'Account Assets Report'
+
+    def _valid_field_parameter(self, field, name):
+        return name in ['tree_invisible', 'tracking'] or super()._valid_field_parameter(field, name)
 
     filter_date = {'mode': 'range', 'filter': 'this_year'}
-    filter_all_entries = False
-    filter_hierarchy = True
-    filter_unfold_all = True
+    filter_all_entries = fields.Boolean(string='All Entries', default=False)
+    filter_hierarchy = fields.Boolean(string='Hierarchy', default=True)
+    filter_unfold_all = fields.Boolean(string='Unfold All', default=True)
 
     def get_header(self, options):
         start_date = format_date(self.env, options['date']['date_from'])

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record model="ir.ui.view" id="asset_value_addition_form">
         <field name="name">wizard.asset.value.addition.form</field>
         <field name="model">asset.value.addition</field>
@@ -9,37 +8,37 @@
                 <field name="asset_id" invisible="1"/>
                 <group>
                     <group string="Modification">
-                        <field name="name" placeholder="Modification reason" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="name" placeholder="Modification reason" required="1" readonly="state != 'draft'"/>
+                        <field name="date" readonly="state != 'draft'"/>
                     </group>
                     <group string="New Values">
-                        <field name="value_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="value_amount" readonly="state != 'draft'"/>
                         <field name="currency_id" invisible="1"/>
-                        <field name="tax_value_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="tax_value_amount" readonly="state != 'draft'"/>
                     </group>
                     <group string="Increase Accounts">
-                        <field name="account_asset_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <field name="account_asset_counterpart_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="account_asset_id" readonly="state != 'draft'"/>
+                        <field name="account_asset_counterpart_id" readonly="state != 'draft'"/>
                     </group>
                     <group>
-                    	<field name="analytic_account_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="analytic_account_id" readonly="state != 'draft'"/>
                         <field name="state" invisible="1"/>
-                        <field name="journal_id" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('journal_id', '=', False)]}"/>
+                        <field name="journal_id" readonly="state != 'draft'" invisible="journal_id == False"/>
                     </group>
                 </group>
                 <footer>
-                    <button name="modify" string="Modify" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="modify" string="Modify" type="object" class="btn btn-primary" invisible="state != 'draft'"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" invisible="state != 'draft'"/>
                 </footer>
             </form>
         </field>
     </record>
+
     <record model="ir.ui.view" id="asset_value_addition_tree">
-        <field name="name">wizard.asset.value.addition.form</field>
+        <field name="name">asset.value.addition.tree</field>
         <field name="model">asset.value.addition</field>
         <field name="arch" type="xml">
-            <tree string="Modify Asset">
-
+            <list string="Value Additions">
                 <field name="name" placeholder="Modification reason" required="1"/>
                 <field name="date"/>
                 <field name="value_amount"/>
@@ -47,51 +46,49 @@
                 <field name="account_asset_id" optional="hide"/>
                 <field name="account_asset_counterpart_id" optional="hide"/>
                 <field name="analytic_account_id" optional="hide"/>
-
-            </tree>
+            </list>
         </field>
     </record>
 
-
     <record model="ir.ui.view" id="asset_revalue_form">
-        <field name="name">wizard.asset.revalue.form</field>
+        <field name="name">asset.revalue.form</field>
         <field name="model">asset.revalue</field>
         <field name="arch" type="xml">
             <form string="Revalue">
                 <field name="asset_id" invisible="1"/>
                 <group>
                     <group string="Modification">
-                        <field name="name" placeholder="Modification reason" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="name" placeholder="Modification reason" required="1" readonly="state != 'draft'"/>
+                        <field name="date" readonly="state != 'draft'"/>
                     </group>
                     <group string="Revaluation">
-                        <field name="value_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <field name="book_reval" invisible="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="value_amount" readonly="state != 'draft'"/>
+                        <field name="book_reval" invisible="1" readonly="state != 'draft'"/>
                         <field name="currency_id" invisible="1"/>
-                        <!-- <field name="tax_value_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/> -->
                     </group>
                     <group string="Increase Accounts">
-                        <field name="account_asset_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        <field name="account_asset_counterpart_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="account_asset_id" readonly="state != 'draft'"/>
+                        <field name="account_asset_counterpart_id" readonly="state != 'draft'"/>
                     </group>
                     <group>
-                        <field name="analytic_account_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="analytic_account_id" readonly="state != 'draft'"/>
                         <field name="state" invisible="1"/>
-                        <field name="journal_id" attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('journal_id', '=', False)]}"/>
+                        <field name="journal_id" readonly="state != 'draft'" invisible="journal_id == False"/>
                     </group>
                 </group>
                 <footer>
-                    <button name="modify" string="Modify" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="modify" string="Modify" type="object" class="btn btn-primary" invisible="state != 'draft'"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" invisible="state != 'draft'"/>
                 </footer>
             </form>
         </field>
     </record>
+
     <record model="ir.ui.view" id="asset_revalue_tree">
-        <field name="name">wizard.asset.revalue.form</field>
+        <field name="name">asset.revalue.tree</field>
         <field name="model">asset.revalue</field>
         <field name="arch" type="xml">
-            <tree string="Modify Asset">
+            <list string="Asset Revaluation">
                 <field name="name" placeholder="Modification reason" required="1"/>
                 <field name="date"/>
                 <field name="value_amount"/>
@@ -99,11 +96,7 @@
                 <field name="account_asset_id" optional="hide"/>
                 <field name="account_asset_counterpart_id" optional="hide"/>
                 <field name="analytic_account_id" optional="hide"/>
-
-            </tree>
+            </list>
         </field>
     </record>
-
-
-
 </odoo>

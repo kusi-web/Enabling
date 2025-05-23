@@ -7,7 +7,7 @@ from pickle import FALSE
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
 from odoo.tools import float_compare, float_is_zero, float_round
-from odoo.exceptions import ValidationError, UserError, Warning
+from odoo.exceptions import ValidationError, UserError
 from math import copysign
 from datetime import date, datetime,timedelta
 import pytz; pytz.timezone("Pacific/Auckland")
@@ -17,7 +17,16 @@ _logger = logging.getLogger(__name__)
 class AccountAsset(models.Model):
     _inherit = 'account.asset'
 
+    @api.model
+    def _valid_field_parameter(self, field, name):
+        return name in ['states', 'tracking'] or super()._valid_field_parameter(field, name)
+
     # Newly added fields
+    asset_type = fields.Selection([
+        ('purchase', 'Purchase'),
+        ('expense', 'Expense'),
+        ('sale', 'Sale'),
+    ], default='purchase', string='Asset Type', required=True)
     asset_model = fields.Many2one('account.asset', domain="[('state', '=', 'model')]", string='Asset Model')
     take_on_asset = fields.Boolean('Take On Asset')
     takeon_accumulated_depreciation = fields.Float('Takeon Accumulated Depreciation')
@@ -29,7 +38,7 @@ class AccountAsset(models.Model):
     total_cost = fields.Monetary(string="Total Cost", compute='_compute_total_cost_value', store=True, readonly=True)
     tax_original_value = fields.Monetary(string="Value", compute='_compute_value_tax', store=True, readonly=True)
     book_value = fields.Monetary(string='Net Book Value', readonly=True, compute='_compute_book_value', store=True, help="Sum of the depreciable value, the salvage value and the book value of all value increase items")
-    tax_book_value = fields.Monetary(string='Net Tax Value', readonly=True, compute='_compute_tax_book_value', store=False)
+    tax_book_value = fields.Monetary(string='Net Tax Value', readonly=True, compute='_compute_tax_book_value', store=False, recursive=True)
 
     value_residual = fields.Monetary(string='Prior Accumulated Depreciation', readonly=True, compute='_compute_value_residual', store=True)
     value_residual_sale = fields.Monetary(string='Accumulated Depreciation', readonly=True, store=True,default=0)
@@ -125,7 +134,7 @@ class AccountAsset(models.Model):
     asset_revalue_ids = fields.One2many('asset.revalue', 'asset_id', string="Asset Revalues")
     asset_value_addition_ids = fields.One2many('asset.value.addition', 'asset_id', string="Asset Value Additions")
 
-    display_model_choice = fields.Boolean(compute="_compute_display_model_choice")
+    # display_model_choice = fields.Boolean(compute="_compute_display_model_choice")
     display_account_asset_id = fields.Boolean(compute="_compute_display_account_asset_id")
     total_depreciation = fields.Monetary(string="Total Depreciation", compute="_compute_total_depreciation", store=True)
     
@@ -341,13 +350,14 @@ class AccountAsset(models.Model):
                 record.tax_original_value = record.tax_purch_price + record.tax_x_value_addition 
                 # record.tax_original_value = 0
                 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
-        company_id = vals_list.get('company_id', self.default_get(['company_id'])['company_id'])
-        self_comp = self.with_company(company_id)
-        if vals_list.get('seq_no', 'New') == 'New':
-            vals_list['seq_no'] = self_comp.env['ir.sequence'].next_by_code('account.asset') or '/'
-        return super(AccountAsset, self_comp).create(vals_list)
+        for vals in vals_list:
+            company_id = vals.get('company_id', self.default_get(['company_id'])['company_id'])
+            self_comp = self.with_company(company_id)
+            if vals.get('seq_no', 'New') == 'New':
+                vals['seq_no'] = self_comp.env['ir.sequence'].next_by_code('account.asset') or '/'
+        return super(AccountAsset, self).create(vals_list)
 
     @api.depends('parent_id')
     def _entry_add_value_list(self):
@@ -860,6 +870,10 @@ class EnablingEmployee(models.Model):
 class AssetValueAddition(models.Model):
     _name = 'asset.value.addition'
 
+    @api.model
+    def _valid_field_parameter(self, field, name):
+        return name in ['tracking'] or super()._valid_field_parameter(field, name)
+
     asset_id = fields.Many2one(string="Asset", comodel_name='account.asset', required=True, help="The asset to be modified by this wizard", ondelete="cascade")
     company_id = fields.Many2one(related="asset_id.company_id", string="Company", readonly=True, store=True)
     name = fields.Char('Reason')
@@ -920,6 +934,10 @@ class AssetValueAddition(models.Model):
 class AssetRevalue(models.Model):
     _name = 'asset.revalue'
 
+    @api.model
+    def _valid_field_parameter(self, field, name):
+        return name in ['tracking'] or super()._valid_field_parameter(field, name)
+
     asset_id = fields.Many2one(string="Asset", comodel_name='account.asset', required=True, help="The asset to be modified by this wizard", ondelete="cascade")
     company_id = fields.Many2one(related="asset_id.company_id", string="Company", readonly=True, store=True)
     name = fields.Char('Reason')
@@ -976,6 +994,6 @@ class AssetRevalue(models.Model):
 
 
 class AccountAssetGroup(models.Model):
-    _name = 'account.asset.group'
+    _inherit = 'account.asset.group'
 
     name = fields.Char(string="Group Name", required=True)

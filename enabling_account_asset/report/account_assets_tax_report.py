@@ -16,23 +16,41 @@ _logger = logging.getLogger(__name__)
 MAX_NAME_LENGTH = 50
 
 
-class assets_tax_report(models.AbstractModel):
+class assets_tax_report(models.Model):
     _inherit = 'account.report'
-    _name = 'account.assets.tax.report'
     _description = 'Account Assets Tax Report'
+    _name = 'account.assets.tax.report'
+    
+    section_report_ids = fields.Many2many('account.report.section', 
+        'account_assets_tax_report_section_rel', 'report_id', 'section_id', 
+        string='Sections')
+    section_main_report_ids = fields.Many2many('account.report.section',
+        'account_assets_tax_main_report_section_rel', 'report_id', 'section_id',
+        string='Main Report Sections')
+
+    def _valid_field_parameter(self, field, name):
+        return name in ['tree_invisible', 'tracking'] or super()._valid_field_parameter(field, name)
 
     filter_date = {'mode': 'range', 'filter': 'this_year'}
-    filter_all_entries = False
-    filter_hierarchy = True
-    filter_unfold_all = True
+    filter_all_entries = fields.Boolean(string='All Entries', default=False)
+    filter_hierarchy = fields.Boolean(string='Hierarchy', default=True)
+    filter_unfold_all = fields.Boolean(string='Unfold All', default=True)
 
     def _get_report_name(self):
         return _('Depreciation Tax Table Report')
 
-    def _get_templates(self):
-        templates = super(assets_tax_report, self)._get_templates()
-        templates['main_template'] = 'enabling_account_asset.main_template_asset_tax_report'
-        return templates
+    @api.model
+    def _get_singleton_report(self):
+        """Get a singleton report record, creating it if necessary."""
+        report = self.env.ref('enabling_account_asset.account_assets_tax_report', raise_if_not_found=False)
+        if not report:
+            existing_report = self.search([], limit=1)
+            report = existing_report or self.create({
+                'name': 'Assets Tax Report',
+                'filter_unfold_all': True,
+                'filter_hierarchy': True,
+            })
+        return report
 
     def get_header(self, options):
         start_date = format_date(self.env, options['date']['date_from'])

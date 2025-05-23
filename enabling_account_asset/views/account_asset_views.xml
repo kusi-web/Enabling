@@ -1,148 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record model="ir.ui.view" id="view_account_asset_form_enabling_inherit">
         <field name="name">account.asset.form</field>
         <field name="model">account.asset</field>
-        <field name="inherit_id" ref="account_asset.view_account_asset_form" />
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
         <field name="arch" type="xml">
-            <!-- rename fields -->
-            <xpath expr="//form[1]/sheet[1]/group[1]/group[1]" position="attributes">
+            <!-- <group name="main_group" position="attributes">
                 <attribute name="string">Asset Cost</attribute>
-            </xpath>
-            <xpath expr="//field[@name='original_value']" position="attributes">
+            </group> -->
+            
+            <field name="original_value" position="attributes">
                 <attribute name="string">Total Cost old</attribute>
-                <attribute name="invisible">True</attribute>
-            </xpath>
-            <xpath expr="//field[@name='original_value']" position="after">
+                <attribute name="invisible">1</attribute>
+            </field>
+            
+            <field name="original_value" position="after">
                 <field name="total_cost"/>
-            </xpath>
-            <!-- <xpath expr="//form[1]/sheet[1]/group[1]/group[4]" position="attributes">
-                <attribute name="string">Asset Tax Cost</attribute>
-            </xpath> -->
-            <xpath expr="//field[@name='already_depreciated_amount_import']" position="attributes">
-                <attribute name="string">Take On Accumulated Depreciated Amount</attribute>
-              </xpath>
-            <!-- rename fields -->
-            <xpath expr="//button[@name='action_asset_modify']" position="after">
-                <button name="action_asset_value_addition" states="open" string="Addition" type="object" />
-                <button name="action_asset_revalue" states="open" string="Revalue" type="object"/>
+            </field>
 
-            </xpath>
-            <xpath expr="//button[@name='open_entries']" position="before">
+            <field name="already_depreciated_amount_import" position="attributes">
+                <attribute name="string">Take On Accumulated Depreciated Amount</attribute>
+            </field>
+
+            <button name="action_asset_modify" position="after">
+                <button name="action_asset_value_addition" type="object" string="Addition" 
+                        invisible="state != 'open'"/>
+                <button name="action_asset_revalue" type="object" string="Revalue" 
+                        invisible="state != 'open'"/>
+            </button>
+
+            <button name="open_entries" position="before">
                 <button class="oe_stat_button" name="open_value_entries" type="object" icon="fa-bars">
-                    <field string="Value Additions" name="add_value_count" widget="statinfo" />
+                    <field string="Value Additions" name="add_value_count" widget="statinfo"/>
                 </button>
                 <button class="oe_stat_button" name="open_revalue_entries" type="object" icon="fa-bars">
-                    <field string="Revalue" name="revalue_count" widget="statinfo" />
+                    <field string="Revalue" name="revalue_count" widget="statinfo"/>
                 </button>
-            </xpath>
-            <xpath expr="//field[@name='method']" position="before">
-                <field name="asset_model" attrs="{'invisible': [('state', '=', 'model')]}" />
-            </xpath>
-            <xpath expr="//field[@name='value_residual']" position="after">
-                <field name="value_residual_sale" attrs="{'invisible': [('state', '!=', 'close')]}"/>
-                <field name="proceeds_from_sale" attrs="{'invisible': [('state', '!=', 'close')]}"/>
-              </xpath>
-            <xpath expr="//field[@name='book_value']" position="replace">
-                <field name="book_value" widget="monetary" required="1" attrs="{'invisible': ['|', ('state', '=', 'model'), ('state', '=', 'close')]}" options="{'currency_field': 'currency_id'}" />
-                <field name="book_value" widget="monetary" required="1" attrs="{'invisible': ['|', ('state', '=', 'model'), ('state', '!=', 'close')]}" options="{'currency_field': 'currency_id'}" style="color: black;background: red;" />
-            </xpath>
-            <xpath expr="//label[@for='name']" position="before">
+            </button>
+
+            <field name="method" position="before">
+                <field name="asset_model" invisible="state == 'model'"/>
+            </field>
+
+            <field name="value_residual" position="after">
+                <field name="value_residual_sale" invisible="state != 'close'"/>
+                <field name="proceeds_from_sale" invisible="state != 'close'"/>
+            </field>
+
+            <field name="book_value" position="replace">
+                <field name="book_value" widget="monetary" required="1" 
+                       invisible="state in ('model', 'close')" 
+                       options="{'currency_field': 'currency_id'}"/>
+                <field name="book_value" widget="monetary" required="1" 
+                       invisible="state != 'close'" 
+                       options="{'currency_field': 'currency_id'}" 
+                       decoration-danger="1"/>
+            </field>
+
+            <field name="name" position="before">
                 <h2>
-                    <field name="seq_no" attrs="{'invisible': [('seq_no', '=', 'New')]}" />
+                    <field name="seq_no" invisible="seq_no == 'New'"/>
                 </h2>
-            </xpath>
-            <xpath expr="//field[@name='method_progress_factor']" position="after">
-                <field name="depreciation_percentage" />
-                <field name="value_addition" invisible="1" />
-            </xpath>
-            <xpath expr="//field[@name='acquisition_date']" position="after">
-                <field name="take_on_asset" />
-                <field name="x_purch_price" />
-                <field name="x_book_reval" readonly="1" />
-                <field name="x_value_addition" string="Addition" />
-                <field name="x_monthly_depr" />
-                <field name="takeon_accumulated_depreciation" attrs="{'invisible': [('take_on_asset','=',False)]}" />
+            </field>
+
+            <field name="method_progress_factor" position="after">
+                <field name="depreciation_percentage"/>
+                <field name="value_addition" invisible="1"/>
+            </field>
+
+            <field name="acquisition_date" position="after">
+                <field name="take_on_asset"/>
+                <field name="x_purch_price"/>
+                <field name="x_book_reval" readonly="1"/>
+                <field name="x_value_addition" string="Addition"/>
+                <field name="x_monthly_depr"/>
+                <field name="takeon_accumulated_depreciation" invisible="not take_on_asset"/>
                 <field name="total_depreciation" invisible="1"/>
-            </xpath>
-            <xpath expr="//field[@name='analytic_tag_ids']" position="after">
-                <field name="employee_id" />
-                <field name="group_id" />
-            </xpath>
+            </field>
+
             <xpath expr="//group[4]" position="after">
-                <group string="Asset Tax Cost" attrs="{'invisible': [('state', '=', 'model')]}">
-                    <field name="tax_original_value" string="Total Tax Cost" attrs="{'invisible': [('state', '=', 'model')]}" />
-                    <field name="tax_x_value_addition" attrs="{'invisible': [('state', '=', 'model')]}" />
-                    <field name="tax_purch_price" string="Tax Purchase Price" attrs="{'invisible': [('state', '=', 'model')], 'readonly': ['|', ('state','!=','draft'), ('original_move_line_ids', '!=', [])]}" />
-                    <field name="tax_monthly_depr" string="Monthly Tax Depreciation" attrs="{'invisible': [('state', '=', 'model')]}" />
-                    <field name="tax_acquisition_date" attrs="{'invisible': [('state', '=', 'model')], 'readonly': ['|', ('state','!=','draft'), ('original_move_line_ids', '!=', [])], 'readonly': [('state', '!=', 'draft')]}" />
-                    <field name="takeon_accumulated_depreciation_tax" attrs="{'invisible': [('take_on_asset','=',False)]}" />
+                <group string="Asset Tax Cost" invisible="state == 'model'">
+                    <field name="tax_original_value" string="Total Tax Cost"/>
+                    <field name="tax_x_value_addition"/>
+                    <field name="tax_purch_price" string="Tax Purchase Price" 
+                           readonly="state != 'draft' or original_move_line_ids"/>
+                    <field name="tax_monthly_depr" string="Monthly Tax Depreciation"/>
+                    <field name="tax_acquisition_date" 
+                           readonly="state != 'draft' or original_move_line_ids"/>
+                    <field name="takeon_accumulated_depreciation_tax" invisible="not take_on_asset"/>
                 </group>
-                <group string="Current Tax Values" attrs="{'invisible': [('state', '=', 'model')]}">
-                    <field name="tax_salvage_value" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'invisible': ['|', ('asset_type','!=','purchase'), ('state', '=', 'model')]}" />
-                    <field name="tax_value_residual" force_save="1" widget="monetary" attrs="{'invisible': [('state', '=', 'model')]}" options="{'currency_field': 'currency_id'}" />
-                    <field name="tax_accumulated_dep" force_save="1" widget="monetary" attrs="{'invisible': [('state', '=', 'model')]}" options="{'currency_field': 'currency_id'}" />
-                    <field name="tax_book_value" widget="monetary" required="1" attrs="{'invisible': ['|', ('state', '=', 'model'), ('state', '=', 'close')]}" options="{'currency_field': 'currency_id'}" />
-                    <field name="tax_book_value" widget="monetary" required="1" attrs="{'invisible': ['|', ('state', '=', 'model'), ('state', '!=', 'close')]}" options="{'currency_field': 'currency_id'}" style="color: black;background: red;" />
+
+                <group string="Current Tax Values" invisible="state == 'model'">
+                    <field name="tax_salvage_value" widget="monetary" 
+                           options="{'currency_field': 'currency_id'}" 
+                           invisible="asset_type != 'purchase'"/>
+                    <field name="tax_value_residual" force_save="1" widget="monetary" 
+                           options="{'currency_field': 'currency_id'}"/>
+                    <field name="tax_accumulated_dep" force_save="1" widget="monetary" 
+                           options="{'currency_field': 'currency_id'}"/>
+                    <field name="tax_book_value" widget="monetary" required="1" 
+                           invisible="state in ('model', 'close')" 
+                           options="{'currency_field': 'currency_id'}"/>
+                    <field name="tax_book_value" widget="monetary" required="1" 
+                           invisible="state != 'close'" 
+                           options="{'currency_field': 'currency_id'}" 
+                           decoration-danger="1"/>
                 </group>
+
                 <group string="Tax Depreciation">
-                    <field name="tax_method" widget="radio" options="{'horizontal': true}" />
-                    <field name="tax_method_progress_factor" attrs="{'invisible':[('tax_method','=','linear')], 'required':[('tax_method','in',('degressive', 'degressive_then_linear'))]}" />
-                    <field name="tax_depreciation_percentage" />
-                    <label for="tax_method_number" string="Duration" />
-                    <div class="o_row">
-                        <field name="tax_method_number" required="1" />
-                        <field name="tax_method_period" required="1" nolabel="1" />
+                    <field name="tax_method" widget="radio" options="{'horizontal': true}"/>
+                    <field name="tax_method_progress_factor" 
+                           invisible="tax_method == 'linear'" 
+                           required="tax_method in ('degressive', 'degressive_then_linear')"/>
+                    <field name="tax_depreciation_percentage"/>
+                    <label for="tax_method_number" string="Duration"/>
+                    <div class="row">
+                        <field name="tax_method_number" required="1"/>
+                        <field name="tax_method_period" required="1" nolabel="1"/>
                     </div>
-                    <label for="tax_prorata" />
-                    <div class="o_row" attrs="{'invisible': [('state', 'not in', ('draft', 'model')), ('prorata', '=', False)]}">
-                        <field name="tax_prorata" />
-                        <label for="tax_prorata_date" attrs="{'invisible': ['|', ('tax_prorata', '=', False), ('state', '=', 'model')]}" />
-                        <field name="tax_prorata_date" attrs="{'invisible': ['|', ('tax_prorata', '=', False), ('state', '=', 'model')], 'required': [('tax_prorata', '=', True), ('state', '!=', 'model')]}" />
+                    <label for="tax_prorata"/>
+                    <div class="row">
+                        <field name="tax_prorata"/>
+                        <label for="tax_prorata_date" 
+                               invisible="not tax_prorata or state == 'model'"/>
+                        <field name="tax_prorata_date" 
+                               invisible="not tax_prorata or state == 'model'" 
+                               required="tax_prorata and state != 'model'"/>
                     </div>
-                    <field name="tax_first_depreciation_date" string="Start Depreciating" attrs="{'required': [('state', '!=', 'model')], 'invisible': [('state', '=', 'model')], 'readonly': [('state', '!=', 'draft')]}" />
-                    <field name="tax_depreciation_entries_count" invisible="1" />
+                    <field name="tax_first_depreciation_date" string="Start Depreciating" 
+                           required="state != 'model'" 
+                           invisible="state == 'model'" 
+                           readonly="state != 'draft'"/>
+                    <field name="tax_depreciation_entries_count" invisible="1"/>
                 </group>
             </xpath>
-            <xpath expr="//page[@name='depreciation_board']" position="after">
-                <!-- <page string="Tax Depreciation Board" name="tax_depreciation_board" attrs="{'invisible' : [('tax_depreciation_entries_count', '=', 0)]}"> -->
+
+            <page name="depreciation_board" position="after">
                 <page string="Tax Depreciation Board" name="tax_depreciation_board">
-                    <field name="tax_depreciation_move_ids" mode="tree" options="{'reload_whole_on_button': true}">
-                        <tree string="Tax Depreciation Lines" create="1" default_order="date asc, id asc" editable="top">
-                            <field name="currency_id" invisible="1" />
-                            <field name="ref" />
-                            <field name="date" string="Depreciation Date" />
-                            <field name="depreciation" widget="monetary" string="Depreciation" options="{'currency_field': 'currency_id'}" />
-                            <field name="cumulative_depreciation" readonly="1" force_save="1" options="{'currency_field': 'currency_id'}" />
-                            <field name="depreciable_value" readonly="1" widget="monetary" force_save="1" options="{'currency_field': 'currency_id'}" />
-                        </tree>
+                    <field name="tax_depreciation_move_ids" mode="list">
+                        <list string="Tax Depreciation Lines" editable="top" create="1" default_order="date asc, id asc">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="ref"/>
+                            <field name="date" string="Depreciation Date"/>
+                            <field name="depreciation" widget="monetary" string="Depreciation" 
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="cumulative_depreciation" readonly="1" force_save="1" 
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="depreciable_value" readonly="1" widget="monetary" force_save="1" 
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </list>
                     </field>
                 </page>
-            </xpath>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="asset_sell_form">
-        <field name="name">wizard.asset.sell.form</field>
-        <field name="model">account.asset.sell</field>
-        <field name="inherit_id" ref="account_asset.asset_sell_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='loss_account_id']" position="after">
-                <field name="disposal_sell_reason" />
-            </xpath>
+            </page>
         </field>
     </record>
 
     <record id="action_batch_confirm_asset" model="ir.actions.server">
-        <field name="model_id" ref="account_asset.model_account_asset" />
         <field name="name">Batch Confirm</field>
-        <field name="binding_model_id" ref="account_asset.model_account_asset" />
+        <field name="model_id" ref="account_asset.model_account_asset"/>
+        <field name="binding_model_id" ref="account_asset.model_account_asset"/>
         <field name="state">code</field>
-        <field name="code">
-            if records:
-              action = records.compute_batch_asset()
-          </field>
+        <field name="code">if records:
+    action = records.compute_batch_asset()</field>
     </record>
 
     <record id="account_asset_group_view_form" model="ir.ui.view">
@@ -150,13 +169,11 @@
         <field name="model">account.asset.group</field>
         <field name="arch" type="xml">
             <form edit="0">
-                <header></header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="name" />
+                            <field name="name"/>
                         </group>
-                        <group></group>
                     </group>
                 </sheet>
             </form>
@@ -167,18 +184,20 @@
         <field name="name">account.asset.group.list</field>
         <field name="model">account.asset.group</field>
         <field name="arch" type="xml">
-            <tree edit="0">
-                <field name="name" />
-            </tree>
+            <list edit="0">
+                <field name="name"/>
+            </list>
         </field>
     </record>
 
     <record id="act_account_asset_group" model="ir.actions.act_window">
         <field name="name">Asset Group</field>
         <field name="res_model">account.asset.group</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem parent="account.account_management_menu" id="menu_action_account_asset_group" action="act_account_asset_group" />
-
+    <menuitem id="menu_action_account_asset_group" 
+              name="Asset Groups"
+              parent="account.account_management_menu" 
+              action="act_account_asset_group"/>
 </odoo>

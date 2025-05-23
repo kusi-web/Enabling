@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <template id="main_template_asset_tax_report">
+        <div class="o_account_reports_page o_account_reports_no_print o_account_assets_report">
+            <t t-call="web.layout">
+                <t t-set="title">Assets Report</t>
+                <div class="o_account_reports_body">
+                    <t t-raw="body"/>
+                </div>
+            </t>
+        </div>
+    </template>
 
-        <template id="main_template_asset_tax_report" inherit_id="account_reports.main_template" primary="True">
-            <xpath expr="//div[hasclass('o_account_reports_page')]" position="attributes">
-                <attribute name="class">o_account_reports_page o_account_reports_no_print o_account_assets_report</attribute>
-            </xpath>
-        </template>
+    <record id="action_account_report_assets_tax" model="ir.actions.client">
+        <field name="name">Depreciation Schedule Tax</field>
+        <field name="tag">account_report</field>
+        <field name="context" eval="{'model': 'account.assets.tax.report'}" />
+    </record>
 
-        <record id="action_account_report_assets_tax" model="ir.actions.client">
-            <field name="name">Depreciation Schedule Tax</field>
-            <field name="tag">account_report</field>
-            <field name="context" eval="{'model': 'account.assets.tax.report'}" />
-        </record>
-
-        <menuitem id="menu_action_account_report_assets_tax" name="Depreciation Schedule Tax"
-                  action="action_account_report_assets_tax"
-                  parent="account.account_reports_management_menu"/>
-    </data>
+    <menuitem id="menu_action_account_report_assets_tax" 
+              name="Depreciation Schedule Tax"
+              action="action_account_report_assets_tax"
+              parent="account.account_reports_management_menu"
+              sequence="20"/>
 </odoo>
