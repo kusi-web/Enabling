@@ -1,0 +1,13 @@
+.o_account_reports_page .o_account_reports_level2 {
+    border-bottom: 3px solid #bbb;
+    font-weight: bold;
+    > td.o_account_report_line_indent > span:last-child {
+        margin-left: 20px;
+        color: orange;
+    }
+    &.total {
+        > td > span:last-child {
+            margin-left: 10px;
+        }
+    }
+}

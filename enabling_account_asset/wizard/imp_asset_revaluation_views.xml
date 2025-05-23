@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="import_asset_revaluation_form" model="ir.ui.view">
+        <field name="name">import.asset.revaluation.form</field>
+        <field name="model">import.asset.revaluation</field>
+        <field name="arch" type="xml">
+            <form string="Import Product Pricelist">
+                <header>
+                    Import Asset Revaluations
+                </header>
+                <group>
+                    <group col="2">
+                        <field name="select_file" widget="radio" required="1" />
+                    </group>
+                    <group col="2">
+                        <field name="data_file" filename="name" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="import_asset_revaluation" string="Import"
+                        type="object" class="oe_highlight" />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_import_asset_revaluation" model="ir.actions.act_window">
+        <field name="name">import.asset.revaluation.action</field>
+        <field name="res_model">import.asset.revaluation</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="import_asset_revaluation_menu" name="Import Asset Revaluations" action="action_import_asset_revaluation" parent="account.menu_finance_entries_management" sequence="102" />
+</odoo>

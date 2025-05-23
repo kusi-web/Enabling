@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequences for purchase.order -->
+        <record id="seq_account_asset" model="ir.sequence">
+            <field name="name">Asset</field>
+            <field name="code">account.asset</field>
+            <field name="prefix">WD/FF</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

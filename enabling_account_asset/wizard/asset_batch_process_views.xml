@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="view_asset_batch_process_form" model="ir.ui.view">
+        <field name="name">Asset Batch confirm</field>
+        <field name="model">account.asset.batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="asset_ids" widget="many2many_tags" options="{'no_create_edit': True,'no_create': True}"/>
+                </group>
+
+                <footer>
+                    <button name="batch_confirm" type="object" string="Confirm"
+                        class="oe_highlight" />
+                    or
+                    <button name="cancel" string="Close" special="cancel"
+                        class="oe_link" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_asset_batch_process" model="ir.actions.act_window">
+        <field name="name">Batch Confirm</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.asset.batch</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_asset_batch_process_form" />
+        <field name="target">new</field>
+    </record>
+</odoo>
